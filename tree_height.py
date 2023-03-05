@@ -6,9 +6,19 @@ import numpy
 
 
 def compute_height(n, parents):
-    # Write this function
+    height = 0 [0] * n
     max_height = 0
-    # Your code here
+    for i in range(n):
+        node = i
+        while node != -1:
+            if height[node] != 0:
+                height[i] = height[node] + 1
+                break
+            node = parents[node]
+        if height[i] == 0:
+            height[i] = 1
+        if height[i] > max_height:
+            max_height = height[i]
     return max_height
 
 
