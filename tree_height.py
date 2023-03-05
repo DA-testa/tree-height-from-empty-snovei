@@ -2,32 +2,42 @@
 
 import sys
 import threading
-import numpy
-
+import numphy
 
 def compute_height(n, parents):
-    # Write this function
-    max_height = 0
-    # Your code here
-    return max_height
+    heights = [0] * n
+    for node in range(n):
+        if heights[node] != 0:
+            continue
+        if parents[node] == -1:
+            heights[node] = 1
+        else:
+            parent_height = compute_height(parents[node], parents)
+            heights[node] = parent_height + 1
+    return max(heights)
 
 
 def main():
-    # implement input form keyboard and from files
-    
-    # let user input file name to use, don't allow file names with letter a
-    # account for github input inprecision
-    
-    # input number of elements
-    # input values in one variable, separate with space, split these values in an array
-    # call the function and output it's result
-    pass
-
-# In Python, the default limit on recursion depth is rather low,
-# so raise it here for this problem. Note that to take advantage
-# of bigger stack, we have to launch the computation in a new thread.
-sys.setrecursionlimit(10**7)  # max depth of recursion
-threading.stack_size(2**27)   # new thread will get stack of such size
-threading.Thread(target=main).start()
-main()
+   input_method = input("Enter input method (K for keyboard or F for file): ")
+    while input_method.upper() not in ['K', 'F']:
+        input_method = input("Invalid input method. Enter K or F: ")
+    if input_method.upper() == 'K':
+        n = int(input("Enter number of nodes: "))
+        parents = list(map(int, input("Enter parents array: ").split()))
+    else:
+        file_name = input("Enter file name (without 'a' in name): ")
+        while 'a' in file_name or file_name.upper() == 'README':
+            file_name = input("Invalid file name. Enter another name: ")
+        try:
+            with open('folder/' + file_name, 'r', encoding='utf-8') as file:
+                n = int(file.readline())
+                parents = list(map(int, file.readline().split()))
+        except FileNotFoundError:
+            print("File not found.")
+            return
+    print("Tree height:", compute_height(n, parents))
+    if __name__ == '__main__':
+        sys.setrecursionlimit(10**7)  # max depth of recursion
+        threading.stack_size(2**27)   # new thread will get stack of such size
+        threading.Thread(target=main).start()
 # print(numpy.array([1,2,3]))
